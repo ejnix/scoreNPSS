@@ -44,10 +44,10 @@ score_npss <- function(input_df, missing_threshold = .5){
 
     df <- dplyr::mutate_at(df, dplyr::vars(dplyr::starts_with('npss')),
                     ~dplyr::case_when(. == 1 ~ 'Strongly Disagree' ,
-                               . == 2 ~ 'Disagree',
-                               . == 3 ~ 'Neither Agree Nor Disagree',
-                               . == 4 ~ 'Agree',
-                               . == 5 ~ 'Strongly Agree'))
+                                      . == 2 ~ 'Disagree',
+                                      . == 3 ~ 'Neither Agree Nor Disagree',
+                                      . == 4 ~ 'Agree',
+                                      . == 5 ~ 'Strongly Agree'))
     numeric_tf = T
 
   }else{
@@ -59,7 +59,7 @@ score_npss <- function(input_df, missing_threshold = .5){
 
   # Isolate and factor variables
   npss_raw <- dplyr::mutate_at(df, dplyr::vars(dplyr::starts_with('npss')),
-                        ~str_to_title(.))
+                        ~stringr::str_to_title(.))
 
   npss_raw <- dplyr::mutate_at(npss_raw, dplyr::vars(dplyr::starts_with('npss')),
                         ~factor(npss_raw, levels = c("Strongly Disagree",
@@ -84,7 +84,7 @@ score_npss <- function(input_df, missing_threshold = .5){
 
   # Convert variables to numeric
   npss_num <- dplyr::mutate_at(npss_raw, dplyr::vars(dplyr::starts_with('npss')),
-                        ~case_when(. == 'Strongly Disagree' ~ 1,
+                        ~dplyr::case_when(. == 'Strongly Disagree' ~ 1,
                                    . == 'Disagree' ~ 2,
                                    . == 'Neither Agree Nor Disagree' ~ 3,
                                    . == 'Agree' ~ 4,
