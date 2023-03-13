@@ -1,0 +1,14 @@
+Package: scoreNPSS
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person("Evan", "Nix", , "ejnix@iu.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0599-8231"))
+Description: Score the Neuroception of Psychological Safety Scale (NPSS).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    dplyr,
+    magrittr
