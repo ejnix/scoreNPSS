@@ -43,7 +43,7 @@ score_npss <- function(input_df, missing_threshold = .5){
 
 
     df <- dplyr::mutate_at(df, dplyr::vars(dplyr::starts_with('npss')),
-                    ~case_when(. == 1 ~ 'Strongly Disagree' ,
+                    ~dplyr::case_when(. == 1 ~ 'Strongly Disagree' ,
                                . == 2 ~ 'Disagree',
                                . == 3 ~ 'Neither Agree Nor Disagree',
                                . == 4 ~ 'Agree',
