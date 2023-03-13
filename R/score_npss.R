@@ -7,6 +7,7 @@
 #' @export
 #'
 #' @examples
+#' score_npss(test_data, missing_threshold = .4)
 score_npss <- function(input_df, missing_threshold = .5){
   # Add unique identifier for merging
   input_df <- dplyr::mutate(input_df, unique_id_for_merging = dplyr::row_number())

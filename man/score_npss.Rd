@@ -17,3 +17,6 @@ Input dataframe with NPSS scores added.
 \description{
 score_npss
 }
+\examples{
+score_npss(test_data, missing_threshold = .4)
+}
