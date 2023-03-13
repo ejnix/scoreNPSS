@@ -60,14 +60,14 @@ score_npss <- function(input_df, missing_threshold = .5){
 
   # Isolate and factor variables
   npss_raw <- dplyr::mutate_at(df, dplyr::vars(dplyr::starts_with('npss')),
-                        ~stringr::str_to_title(.))
+                               ~stringr::str_to_title(.))
 
   npss_raw <- dplyr::mutate_at(npss_raw, dplyr::vars(dplyr::starts_with('npss')),
-                        ~factor(npss_raw, levels = c("Strongly Disagree",
-                                              "Disagree",
-                                              "Neither Agree Nor Disagree",
-                                              "Agree",
-                                              "Strongly Agree")))
+                        ~factor(., levels = c("Strongly Disagree",
+                                                     "Disagree",
+                                                     "Neither Agree Nor Disagree",
+                                                     "Agree",
+                                                     "Strongly Agree")))
 
   s <- dplyr::select(npss_raw, dplyr::starts_with('npss'))
 
@@ -94,7 +94,7 @@ score_npss <- function(input_df, missing_threshold = .5){
   npss_num <-
     # add suffix to numeric items
     dplyr::rename_at(npss_num, dplyr::vars(dplyr::matches('npss(.*)\\d$')),
-              ~paste0(npss_num, '_num'))
+              ~paste0(., '_num'))
 
   ## Total Scale Sums and Means
 
