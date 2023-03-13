@@ -170,3 +170,7 @@ score_npss <- function(input_df, missing_threshold = .5){
 
   return(npss_scored) # Returns only input_df with added subscales. All factoring, etc. does not remain
 }
+
+
+utils::globalVariables(c("npss_1_num", "npss_14_num", "npss_15_num", "npss_21_num",
+                         "npss_22_num", "npss_29_num", "unique_id_for_merging", "npss_sum", "npss_mean"))
