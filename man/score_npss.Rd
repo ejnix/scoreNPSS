@@ -2,21 +2,24 @@
 % Please edit documentation in R/score_npss.R
 \name{score_npss}
 \alias{score_npss}
-\title{score_npss}
+\title{score_npss
+Is able to take a dataframe containing any number of columns, as long as npss_ items exist}
 \usage{
 score_npss(input_df, missing_threshold = 0.5)
 }
 \arguments{
-\item{input_df}{Dataframe containing the 29 NPSS items, with the prefix: 'npss'}
+\item{input_df}{Dataframe containing the 29 NPSS items, with the prefix: 'npss' Number of item must fall at the end of column names. Ex. npss_1}
 
-\item{missing_threshold}{A percentage of allowed missing data for each subscale in the NPSS (Default .5). If missingness exceeds the set threshold, function returns NA for subscale score.}
+\item{missing_threshold}{A proportion of allowed missing data for each subscale in the NPSS (Default .5). If missingness exceeds the set threshold, function returns NA for subscale score.}
 }
 \value{
 Input dataframe with NPSS scores added.
 }
 \description{
 score_npss
+Is able to take a dataframe containing any number of columns, as long as npss_ items exist
 }
 \examples{
 score_npss(test_data, missing_threshold = .4)
+score_npss(test_data, missing_threshold = .25)
 }

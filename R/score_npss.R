@@ -1,13 +1,15 @@
 #' score_npss
+#' Is able to take a dataframe containing any number of columns, as long as npss_ items exist
 #'
-#' @param input_df Dataframe containing the 29 NPSS items, with the prefix: 'npss'
-#' @param missing_threshold A percentage of allowed missing data for each subscale in the NPSS (Default .5). If missingness exceeds the set threshold, function returns NA for subscale score.
+#' @param input_df Dataframe containing the 29 NPSS items, with the prefix: 'npss' Number of item must fall at the end of column names. Ex. npss_1
+#' @param missing_threshold A proportion of allowed missing data for each subscale in the NPSS (Default .5). If missingness exceeds the set threshold, function returns NA for subscale score.
 #'
 #' @return Input dataframe with NPSS scores added.
 #' @export
 #'
 #' @examples
 #' score_npss(test_data, missing_threshold = .4)
+#' score_npss(test_data, missing_threshold = .25)
 score_npss <- function(input_df, missing_threshold = .5){
   # Add unique identifier for merging
   input_df <- dplyr::mutate(input_df, unique_id_for_merging = dplyr::row_number())
@@ -95,6 +97,8 @@ score_npss <- function(input_df, missing_threshold = .5){
     # add suffix to numeric items
     dplyr::rename_at(npss_num, dplyr::vars(dplyr::matches('npss(.*)\\d$')),
               ~paste0(., '_num'))
+  
+
 
   ## Total Scale Sums and Means
 
@@ -111,7 +115,9 @@ score_npss <- function(input_df, missing_threshold = .5){
 
 
 
-    # Calculate Subscales
+  # Calculate Subscales
+  
+  
     npss_num <-
     dplyr::mutate(npss_num,
            npss_soc_engage_sum = ifelse(rowSums(is.na(dplyr::select(npss_num, npss_1_num:npss_14_num)))
@@ -134,8 +140,23 @@ score_npss <- function(input_df, missing_threshold = .5){
                                          < ncol(dplyr::select(npss_num, npss_22_num:npss_29_num)) * missing_threshold,
                                          rowMeans(dplyr::select(npss_num, npss_22_num:npss_29_num), na.rm = T), NA))
 
+    
+  # Percent Missingness
+  
+  npss_num <- dplyr::mutate(npss_num, 
+                npss_NApct = rowSums(is.na(dplyr::select(npss_num, dplyr::matches('npss(.*)_num')))) 
+                / ncol(dplyr::select(npss_num, dplyr::matches('npss(.*)_num'))),
+                npss_soc_engage_NApct = rowSums(is.na(dplyr::select(npss_num, npss_1_num:npss_14_num)))
+                / ncol(dplyr::select(npss_num, npss_1_num:npss_14_num)),
+                npss_compassion_NApct = rowSums(is.na(dplyr::select(npss_num, npss_15_num:npss_21_num)))
+                / ncol(dplyr::select(npss_num, npss_15_num:npss_21_num)),
+                npss_body_sense_NApct = rowSums(is.na(dplyr::select(npss_num, npss_22_num:npss_29_num)))
+                / ncol(dplyr::select(npss_num, npss_22_num:npss_29_num)))
+  
 
-  npss_subscales <- dplyr::select(npss_num, unique_id_for_merging, npss_sum, npss_mean, dplyr::ends_with('sum'), dplyr::ends_with('mean'))
+  npss_subscales <- dplyr::select(npss_num, unique_id_for_merging, npss_sum, npss_mean, npss_NApct,
+                                  dplyr::starts_with('npss_soc_engage'), dplyr::starts_with('npss_compassion'), 
+                                  dplyr::starts_with('npss_body_sense'))
 
 
   #TODO merge by unique id then move columns
