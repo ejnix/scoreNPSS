@@ -80,7 +80,7 @@ score_npss <- function(input_df, missing_threshold = .5){
 
 
   # Determine presence of underscore in col_names
-  if(sum(grepl('npss_d\\+', names(s))) == 29){
+  if(sum(grepl('npss_\\d+', names(s))) == 29){
     underscore = T
   }else if(sum(grepl('npss\\d+', names(s))) == 29){
     underscore = F
