@@ -58,6 +58,7 @@ score_npss <- function(input_df, missing_threshold = .5){
   }
 
 
+  
 
 
   # Isolate and factor variables
@@ -78,6 +79,15 @@ score_npss <- function(input_df, missing_threshold = .5){
   }
 
 
+  # Determine presence of underscore in col_names
+  if(sum(grepl('npss_d\\+', names(s))) == 29){
+    underscore = T
+  }else if(sum(grepl('npss\\d+', names(s))) == 29){
+    underscore = F
+  }else{
+    warning('Column Names are in an unrecognized format. Format should be npss_#')
+    }
+  
 
   # Convert missing threshold to decimal
   if (missing_threshold > 1){
@@ -117,28 +127,40 @@ score_npss <- function(input_df, missing_threshold = .5){
 
   # Calculate Subscales
   
+  ## Determine Selection Variables
+  if (underscore == T){
+    npss_soc_select <- names(dplyr::select(npss_num, npss_1_num:npss_14_num))
+    npss_compassion_select <- names(dplyr::select(npss_num, npss_15_num:npss_21_num))
+    npss_body_sense_select <- names(dplyr::select(npss_num, npss_22_num:npss_29_num))
+    
+  }else if (underscore == F){
+    npss_soc_select <- names(dplyr::select(npss_num, npss1_num:npss14_num))
+    npss_compassion_select <- names(dplyr::select(npss_num, npss15_num:npss21_num))
+    npss_body_sense_select <- names(dplyr::select(npss_num, npss22_num:npss29_num))
+    
+  }
   
     npss_num <-
     dplyr::mutate(npss_num,
-           npss_soc_engage_sum = ifelse(rowSums(is.na(dplyr::select(npss_num, npss_1_num:npss_14_num)))
-                                        < ncol(dplyr::select(npss_num, npss_1_num:npss_14_num)) * missing_threshold,
-                                        rowSums(dplyr::select(npss_num, npss_1_num:npss_14_num), na.rm = T), NA),
-           npss_compassion_sum = ifelse(rowSums(is.na(dplyr::select(npss_num, npss_15_num:npss_21_num)))
-                                        < ncol(dplyr::select(npss_num, npss_15_num:npss_21_num)) * missing_threshold,
-                                        rowSums(dplyr::select(npss_num, npss_15_num:npss_21_num), na.rm = T), NA),
-           npss_body_sense_sum = ifelse(rowSums(is.na(dplyr::select(npss_num, npss_22_num:npss_29_num)))
-                                        < ncol(dplyr::select(npss_num, npss_22_num:npss_29_num)) * missing_threshold,
-                                        rowSums(dplyr::select(npss_num, npss_22_num:npss_29_num), na.rm = T), NA),
+           npss_soc_engage_sum = ifelse(rowSums(is.na(dplyr::select(npss_num, dplyr::all_of(npss_soc_select))))
+                                        < ncol(dplyr::select(npss_num, dplyr::all_of(npss_soc_select))) * missing_threshold,
+                                        rowSums(dplyr::select(npss_num, dplyr::all_of(npss_soc_select)), na.rm = T), NA),
+           npss_compassion_sum = ifelse(rowSums(is.na(dplyr::select(npss_num, dplyr::all_of(npss_compassion_select))))
+                                        < ncol(dplyr::select(npss_num, dplyr::all_of(npss_compassion_select))) * missing_threshold,
+                                        rowSums(dplyr::select(npss_num, dplyr::all_of(npss_compassion_select)), na.rm = T), NA),
+           npss_body_sense_sum = ifelse(rowSums(is.na(dplyr::select(npss_num, dplyr::all_of(npss_body_sense_select))))
+                                        < ncol(dplyr::select(npss_num, dplyr::all_of(npss_body_sense_select))) * missing_threshold,
+                                        rowSums(dplyr::select(npss_num, dplyr::all_of(npss_body_sense_select)), na.rm = T), NA),
 
-           npss_soc_engage_mean = ifelse(rowSums(is.na(dplyr::select(npss_num, npss_1_num:npss_14_num)))
-                                         < ncol(dplyr::select(npss_num, npss_1_num:npss_14_num)) * missing_threshold,
-                                         rowMeans(dplyr::select(npss_num, npss_1_num:npss_14_num), na.rm = T), NA),
-           npss_compassion_mean = ifelse(rowSums(is.na(dplyr::select(npss_num, npss_15_num:npss_21_num)))
-                                         < ncol(dplyr::select(npss_num, npss_15_num:npss_21_num)) * missing_threshold,
-                                         rowMeans(dplyr::select(npss_num, npss_15_num:npss_21_num), na.rm = T), NA),
-           npss_body_sense_mean = ifelse(rowSums(is.na(dplyr::select(npss_num, npss_22_num:npss_29_num)))
-                                         < ncol(dplyr::select(npss_num, npss_22_num:npss_29_num)) * missing_threshold,
-                                         rowMeans(dplyr::select(npss_num, npss_22_num:npss_29_num), na.rm = T), NA))
+           npss_soc_engage_mean = ifelse(rowSums(is.na(dplyr::select(npss_num, dplyr::all_of(npss_soc_select))))
+                                         < ncol(dplyr::select(npss_num, dplyr::all_of(npss_soc_select))) * missing_threshold,
+                                         rowMeans(dplyr::select(npss_num, dplyr::all_of(npss_soc_select)), na.rm = T), NA),
+           npss_compassion_mean = ifelse(rowSums(is.na(dplyr::select(npss_num, dplyr::all_of(npss_compassion_select))))
+                                         < ncol(dplyr::select(npss_num, dplyr::all_of(npss_compassion_select))) * missing_threshold,
+                                         rowMeans(dplyr::select(npss_num, dplyr::all_of(npss_compassion_select)), na.rm = T), NA),
+           npss_body_sense_mean = ifelse(rowSums(is.na(dplyr::select(npss_num, dplyr::all_of(npss_body_sense_select))))
+                                         < ncol(dplyr::select(npss_num, dplyr::all_of(npss_body_sense_select))) * missing_threshold,
+                                         rowMeans(dplyr::select(npss_num, dplyr::all_of(npss_body_sense_select)), na.rm = T), NA))
 
     
   # Percent Missingness
@@ -146,12 +168,12 @@ score_npss <- function(input_df, missing_threshold = .5){
   npss_num <- dplyr::mutate(npss_num, 
                 npss_NApct = rowSums(is.na(dplyr::select(npss_num, dplyr::matches('npss(.*)_num')))) 
                 / ncol(dplyr::select(npss_num, dplyr::matches('npss(.*)_num'))),
-                npss_soc_engage_NApct = rowSums(is.na(dplyr::select(npss_num, npss_1_num:npss_14_num)))
-                / ncol(dplyr::select(npss_num, npss_1_num:npss_14_num)),
-                npss_compassion_NApct = rowSums(is.na(dplyr::select(npss_num, npss_15_num:npss_21_num)))
-                / ncol(dplyr::select(npss_num, npss_15_num:npss_21_num)),
-                npss_body_sense_NApct = rowSums(is.na(dplyr::select(npss_num, npss_22_num:npss_29_num)))
-                / ncol(dplyr::select(npss_num, npss_22_num:npss_29_num)))
+                npss_soc_engage_NApct = rowSums(is.na(dplyr::select(npss_num, dplyr::all_of(npss_soc_select))))
+                / ncol(dplyr::select(npss_num, dplyr::all_of(npss_soc_select))),
+                npss_compassion_NApct = rowSums(is.na(dplyr::select(npss_num, dplyr::all_of(npss_compassion_select))))
+                / ncol(dplyr::select(npss_num, dplyr::all_of(npss_compassion_select))),
+                npss_body_sense_NApct = rowSums(is.na(dplyr::select(npss_num, dplyr::all_of(npss_body_sense_select))))
+                / ncol(dplyr::select(npss_num, dplyr::all_of(npss_body_sense_select))))
   
 
   npss_subscales <- dplyr::select(npss_num, unique_id_for_merging, npss_sum, npss_mean, npss_NApct,
@@ -167,13 +189,21 @@ score_npss <- function(input_df, missing_threshold = .5){
 
 
   if (upper_prefix == F){
+    if (underscore == T){
     npss_scored <- dplyr::relocate(npss_scored, names(npss_subscales), .before='npss_1')
+    }else if (underscore == F){
+    npss_scored <- dplyr::relocate(npss_scored, names(npss_subscales), .before='npss1')
+    }
 
     # npss_scored <- add_column(input_df, npss_subscales, .before = 'npss_1')
   }
 
   if (upper_prefix == T){
+    if (underscore == T){
     npss_scored <- dplyr::relocate(npss_scored, names(npss_subscales), .before='NPSS_1')
+    } else if (underscore == F){
+    npss_scored <- dplyr::relocate(npss_scored, names(npss_subscales), .before='NPSS1')
+    }
 
     # npss_scored <- add_column(input_df, npss_subscales, .before = 'NPSS_1')
   }
